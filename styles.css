@@ -1,0 +1,6 @@
+* { box-sizing: border-box; }
+html,body { height:100%; margin:0; font-family: Arial, sans-serif; }
+#toolbar { display:flex; gap:6px; padding:8px; background:#f3f3f3; border-bottom:1px solid #ddd; }
+#toolbar button { padding:6px 10px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+#toolbar input[type=file] { padding:6px; }
+canvas { display:block; width:100%; height:calc(100vh - 48px); }

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Excalidraw-like (CDN) — portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="toolbar">
+    <button id="selectBtn">Select</button>
+    <button id="drawBtn">Draw</button>
+    <button id="rectBtn">Rectangle</button>
+    <button id="circleBtn">Circle</button>
+    <button id="lineBtn">Line</button>
+    <button id="deleteBtn">Delete</button>
+    <button id="clearBtn">Clear</button>
+    <button id="undoBtn">Undo</button>
+    <button id="exportBtn">Export PNG</button>
+    <button id="saveBtn">Save JSON</button>
+    <input id="loadInput" type="file" accept="application/json" />
+  </div>
+
+  <canvas id="c"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/fabric@5.2.4/dist/fabric.min.js"></script>
+  <script>
+    const canvas = new fabric.Canvas('c', { backgroundColor: '#fff', preserveObjectStacking: true });
+
+    function resizeCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+      const w = window.innerWidth;
+      const h = window.innerHeight - document.getElementById('toolbar').offsetHeight;
+      canvas.setWidth(w);
+      canvas.setHeight(h);
+      canvas.renderAll();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // History for undo
+    const history = [];
+    function pushHistory() {
+      try {
+        history.push(JSON.stringify(canvas.toJSON()));
+        if (history.length > 50) history.shift();
+      } catch (e) {}
+    }
+
+    // Initial state
+    pushHistory();
+
+    canvas.on('object:added', pushHistory);
+    canvas.on('object:modified', pushHistory);
+    canvas.on('object:removed', pushHistory);
+
+    // Tools
+    const selectBtn = document.getElementById('selectBtn');
+    const drawBtn = document.getElementById('drawBtn');
+    const rectBtn = document.getElementById('rectBtn');
+    const circleBtn = document.getElementById('circleBtn');
+    const lineBtn = document.getElementById('lineBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const undoBtn = document.getElementById('undoBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const loadInput = document.getElementById('loadInput');
+
+    function setSelectMode() {
+      canvas.isDrawingMode = false;
+      canvas.selection = true;
+      canvas.forEachObject(o => o.selectable = true);
+    }
+
+    function setDrawMode() {
+      canvas.isDrawingMode = true;
+      canvas.freeDrawingBrush.width = 3;
+      canvas.freeDrawingBrush.color = '#000000';
+    }
+
+    selectBtn.onclick = () => setSelectMode();
+    drawBtn.onclick = () => setDrawMode();
+
+    rectBtn.onclick = () => {
+      setSelectMode();
+      const rect = new fabric.Rect({ left: 50, top: 50, width: 120, height: 80, fill: 'transparent', stroke: '#000', strokeWidth: 2 });
+      canvas.add(rect);
+    };
+
+    circleBtn.onclick = () => {
+      setSelectMode();
+      const circ = new fabric.Circle({ left: 80, top: 80, radius: 40, fill: 'transparent', stroke: '#000', strokeWidth: 2 });
+      canvas.add(circ);
+    };
+
+    lineBtn.onclick = () => {
+      setSelectMode();
+      const line = new fabric.Line([50, 100, 200, 100], { stroke: '#000', strokeWidth: 2 });
+      canvas.add(line);
+    };
+
+    deleteBtn.onclick = () => {
+      const active = canvas.getActiveObject();
+      if (active) {
+        canvas.remove(active);
+      } else {
+        const activeGroup = canvas.getActiveObjects();
+        activeGroup.forEach(o => canvas.remove(o));
+        canvas.discardActiveObject();
+      }
+    };
+
+    clearBtn.onclick = () => {
+      if (confirm('Clear canvas?')) {
+        canvas.clear();
+        canvas.backgroundColor = '#fff';
+        pushHistory();
+      }
+    };
+
+    undoBtn.onclick = () => {
+      if (history.length > 1) {
+        history.pop();
+        const last = history[history.length - 1];
+        canvas.loadFromJSON(last, () => canvas.renderAll());
+      }
+    };
+
+    exportBtn.onclick = () => {
+      const dataURL = canvas.toDataURL({ format: 'png', multiplier: 2 });
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'canvas.png';
+      a.click();
+    };
+
+    saveBtn.onclick = () => {
+      const json = JSON.stringify(canvas.toJSON());
+      const blob = new Blob([json], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'canvas.json';
+      a.click();
+    };
+
+    loadInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const json = JSON.parse(reader.result);
+          canvas.loadFromJSON(json, () => canvas.renderAll());
+          pushHistory();
+        } catch (err) {
+          alert('Invalid JSON file');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    // Default to draw mode off
+    setSelectMode();
+  </script>
+</body>
+</html>
