@@ -1,5 +1,5 @@
-Excalidraw-like static scaffold (no Node required)
+Jayesh Kaushalya Portfolio
 
-This directory is intended as the Render `Publish Directory`.
+This is the publish-ready static copy customized from `resume.txt`.
 
-Open `index.html` in a browser to run the app.
+The top-right `Notes` button opens `tldraw` in a new tab.
