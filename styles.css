@@ -1,9 +1,9 @@
 :root {
-  --bg: #f3f4f8;
+  --bg: #f4f6fa;
   --surface: rgba(255, 255, 255, 0.78);
   --surface-strong: #ffffff;
-  --surface-dark: #0f1728;
-  --ink: #0f1728;
+  --surface-dark: #0b1324;
+  --ink: #0b1324;
   --muted: #566074;
   --soft: #8d96a8;
   --line: rgba(15, 23, 40, 0.08);
@@ -26,7 +26,7 @@ body {
   font-family: "Manrope", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at top left, rgba(29, 78, 216, 0.12), transparent 26%),
+    radial-gradient(circle at top left, rgba(29, 78, 216, 0.09), transparent 26%),
     radial-gradient(circle at 88% 6%, rgba(15, 118, 110, 0.08), transparent 20%),
     linear-gradient(180deg, #f7f9fc 0%, #eef2f8 100%);
 }
@@ -47,7 +47,7 @@ a {
 }
 
 .page-shell {
-  width: min(1200px, calc(100% - 40px));
+  width: min(1180px, calc(100% - 40px));
   margin: 0 auto;
   padding: 24px 0 48px;
 }
@@ -63,7 +63,7 @@ a {
   padding: 14px 18px;
   margin-bottom: 32px;
   border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 20px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.74);
   backdrop-filter: blur(18px);
   box-shadow: var(--shadow);
@@ -94,6 +94,7 @@ a {
 
 .main-nav a {
   color: var(--muted);
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
@@ -107,6 +108,15 @@ a {
   border-radius: 999px;
   border: 1px solid var(--line);
   transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.primary-link:focus-visible,
+.ghost-link:focus-visible,
+.main-nav a:focus-visible,
+.brand:focus-visible,
+.site-footer a:focus-visible {
+  outline: 3px solid rgba(29, 78, 216, 0.3);
+  outline-offset: 3px;
 }
 
 .ghost-link {
@@ -129,13 +139,16 @@ a {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.55fr);
   gap: 24px;
   align-items: stretch;
 }
 
 .hero-copy {
-  padding: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: clamp(34px, 5vw, 62px);
   border-radius: 34px;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(245, 248, 255, 0.88)),
@@ -184,7 +197,7 @@ a {
 
 .portrait-frame {
   overflow: hidden;
-  aspect-ratio: 4 / 4.3;
+  aspect-ratio: 4 / 5;
   border-radius: 21px;
   background: linear-gradient(145deg, #dbe7fa, #edf3fb);
 }
@@ -194,7 +207,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center 18%;
 }
 
 .portrait-card figcaption {
@@ -277,9 +290,9 @@ h2 {
 }
 
 h1 {
-  max-width: 11ch;
-  font-size: clamp(3rem, 5vw, 5.2rem);
-  line-height: 0.96;
+  max-width: 13ch;
+  font-size: clamp(2.8rem, 4.8vw, 4.6rem);
+  line-height: 1;
 }
 
 h2 {
@@ -307,7 +320,7 @@ h3 {
 .lead {
   max-width: 62ch;
   margin: 22px 0 28px;
-  font-size: 1.06rem;
+  font-size: 1.03rem;
 }
 
 .hero-metrics {
@@ -396,6 +409,31 @@ h3 {
 .writing-card {
   padding: 26px;
   border-radius: 26px;
+}
+
+.feature-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent), var(--teal));
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 64px rgba(15, 23, 40, 0.12);
+}
+
+.feature-card:hover::before {
+  opacity: 1;
 }
 
 .feature-card ul {
@@ -498,6 +536,14 @@ h3 {
   font: inherit;
 }
 
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: rgba(147, 197, 253, 0.8);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+}
+
 .botcheck {
   display: none;
 }
@@ -576,14 +622,21 @@ h3 {
 }
 
 @media (max-width: 920px) {
-  .site-header,
-  .main-nav,
-  .header-actions,
   .contact-panel,
-  .timeline-item,
   .form-actions {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .site-header {
+    flex-wrap: wrap;
+  }
+
+  .main-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    padding-top: 4px;
   }
 
   .timeline-item,
@@ -610,7 +663,7 @@ h3 {
   }
 
   h1 {
-    font-size: 2.6rem;
+    font-size: 2.55rem;
   }
 
   h2 {
@@ -622,6 +675,15 @@ h3 {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 10px 18px;
+  }
+
+  .header-actions {
+    display: none;
+  }
+
+  .hero-cta {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .main-nav a {
