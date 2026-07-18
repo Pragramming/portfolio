@@ -12,7 +12,7 @@
 <body>
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="#hero">JK</a>
+      <a class="brand" href="#hero" aria-label="Jayesh Kaushalya — home">JK</a>
       <nav class="main-nav">
         <a href="#projects">Projects</a>
         <a href="#experience">Experience</a>
@@ -27,8 +27,9 @@
     <main>
       <section class="hero" id="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Generative AI Decision Scientist</p>
-          <h1>Enterprise GenAI systems designed for faster decisions, stronger retrieval, and measurable business impact.</h1>
+          <p class="availability"><span></span> Available for new opportunities</p>
+          <p class="eyebrow">Generative AI · Decision Science · Analytics</p>
+          <h1>Hi, I’m Jayesh. I build AI systems that help teams make better decisions.</h1>
           <p class="lead">
             Jayesh Kaushalya is a Bengaluru-based Decision Scientist at Mu Sigma building Retrieval-Augmented Generation
             systems, LLM-powered assistants, and knowledge-driven analytics workflows for enterprise teams. His work
@@ -46,10 +47,22 @@
           </ul>
         </div>
 
-        <aside class="hero-panel">
+        <aside class="hero-panel" aria-label="Professional profile">
+          <figure class="portrait-card">
+            <div class="portrait-frame">
+              <img src="assets/profile.png" alt="Portrait of Jayesh Kaushalya" width="640" height="800" />
+            </div>
+            <figcaption>
+              <div>
+                <strong>Jayesh Kaushalya</strong>
+                <span>Decision Scientist</span>
+              </div>
+              <span class="location-badge">Bengaluru, IN</span>
+            </figcaption>
+          </figure>
           <div class="profile-card">
             <p class="card-label">Current Role</p>
-            <h2>Decision Scientist 3 at Mu Sigma</h2>
+            <h2>Decision Scientist at Mu Sigma</h2>
             <p>Supporting a Fortune 500 retail client with campaign analytics, customer intelligence, enterprise search, and agentic GenAI solutions.</p>
           </div>
           <div class="profile-card compact">
@@ -57,9 +70,9 @@
             <div class="stack">
               <span>Python</span>
               <span>SQL</span>
-              <span>Neo4j</span>
               <span>Azure</span>
-              <span>Power BI</span>
+              <span>GenAI</span>
+              <span>LLM</span>
               <span>RAG</span>
             </div>
           </div>
@@ -143,8 +156,7 @@
         <div class="timeline">
           <article class="timeline-item">
             <div>
-              <p class="time">August 2023 - Present</p>
-              <h3>Decision Scientist 3</h3>
+              <h3>Decision Scientist </h3>
               <p class="place">Mu Sigma | Bengaluru</p>
             </div>
             <p>Leading work across retail analytics and enterprise GenAI for a Fortune 500 client, spanning customer engagement, intelligent search, dashboarding, and business-facing AI workflows.</p>
@@ -157,15 +169,6 @@
               <p class="place">Mu Sigma</p>
             </div>
             <p>Built a dashboard to monitor customer onboarding and categorize users with RFM analysis, helping stakeholders improve retention, loyalty, and real-time engagement visibility.</p>
-          </article>
-
-          <article class="timeline-item">
-            <div>
-              <p class="time">Recognition</p>
-              <h3>Spot Award</h3>
-              <p class="place">Mu Sigma</p>
-            </div>
-            <p>Recognized for strong delivery in Power BI, SQL, and Python through a dashboard initiative that improved decision-making, streamlined processes, and earned client appreciation.</p>
           </article>
         </div>
       </section>
@@ -240,6 +243,11 @@
           <p class="form-status full-width" id="formStatus" aria-live="polite"></p>
         </form>
       </section>
+
+      <footer class="site-footer">
+        <p>© <span id="currentYear"></span> Jayesh Kaushalya</p>
+        <a href="#hero">Back to top ↑</a>
+      </footer>
     </main>
   </div>
 

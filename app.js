@@ -2,6 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const sectionLinks = document.querySelectorAll('a[href^="#"]');
   const contactForm = document.getElementById("contactForm");
   const formStatus = document.getElementById("formStatus");
+  const currentYear = document.getElementById("currentYear");
+
+  if (currentYear) {
+    currentYear.textContent = new Date().getFullYear();
+  }
 
   sectionLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
