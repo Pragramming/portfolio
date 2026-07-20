@@ -85,6 +85,14 @@ img {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.brand-mark {
   width: 48px;
   height: 48px;
   display: grid;
@@ -95,6 +103,23 @@ img {
   font-weight: 800;
   letter-spacing: 0.04em;
   flex: 0 0 auto;
+}
+
+.brand-copy {
+  display: grid;
+  min-width: 0;
+}
+
+.brand-copy strong {
+  font-size: 0.95rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.brand-copy small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.2;
 }
 
 .main-nav,
@@ -703,6 +728,10 @@ h3 {
 
   h2 {
     font-size: 1.8rem;
+  }
+
+  .brand-copy {
+    display: none;
   }
 
   .header-actions {
