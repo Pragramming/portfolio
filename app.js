@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "POST",
           body: formData
         });
-        const result = await response.json();
+        const rawText = await response.text();
+        const result = rawText ? JSON.parse(rawText) : {};
 
         if (!response.ok || !result.success) {
           throw new Error(result.message || "Unable to send your request right now.");
