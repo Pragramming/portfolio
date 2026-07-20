@@ -4,24 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Portfolio of Jayesh Kaushalya, a Bengaluru-based Decision Scientist specializing in Generative AI, RAG systems, enterprise search, and analytics." />
-  <meta name="theme-color" content="#0b1324" />
+  <meta name="theme-color" content="#07111f" />
   <title>Jayesh Kaushalya | Generative AI Decision Scientist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="#hero" aria-label="Jayesh Kaushalya home">JK</a>
+      <a class="brand" href="#hero" aria-label="Jayesh Kaushalya home">
+        <span class="brand-mark">JK</span>
+        <span class="brand-copy">
+          <strong>Jayesh Kaushalya</strong>
+          <small>Decision Scientist</small>
+        </span>
+      </a>
+
       <nav class="main-nav" aria-label="Primary">
         <a href="#projects">Projects</a>
         <a href="#experience">Experience</a>
         <a href="#expertise">Expertise</a>
         <a href="#contact">Contact</a>
       </nav>
+
       <div class="header-actions">
+        <a class="ghost-link" href="#projects">View Work</a>
         <a class="primary-link" href="#contact">Let's Talk</a>
       </div>
     </header>
@@ -29,23 +41,34 @@
     <main>
       <section class="hero" id="hero">
         <div class="hero-copy">
-          <p class="availability"><span></span> Open to GenAI and Decision Science opportunities</p>
+          <p class="availability"><span></span> Available for GenAI, analytics, and enterprise AI roles</p>
           <p class="eyebrow">Generative AI | Decision Science | Analytics</p>
-          <h1>Building practical AI for better business decisions.</h1>
+          <h1>Designing AI systems that turn enterprise complexity into useful decisions.</h1>
           <p class="lead">
-            I'm Jayesh Kaushalya, a Decision Scientist at Mu Sigma. I design Retrieval-Augmented Generation systems,
-            LLM-powered assistants, and analytics workflows that turn fragmented enterprise information into clear,
-            actionable insight.
+            I'm Jayesh Kaushalya, a Decision Scientist at Mu Sigma focused on Retrieval-Augmented Generation,
+            enterprise assistants, business-facing analytics, and knowledge-driven decision support. I build practical
+            AI systems that make information easier to retrieve, easier to trust, and easier to act on.
           </p>
+
           <div class="hero-cta">
             <a class="primary-link" href="#projects">Explore Case Studies</a>
             <a class="ghost-link" href="#contact">Request a Call Back</a>
           </div>
-          <ul class="hero-metrics">
-            <li><strong>3+</strong><span>years in analytics and enterprise AI delivery</span></li>
-            <li><strong>20%</strong><span>less search time in enterprise data workflows</span></li>
-            <li><strong>25%</strong><span>better retrieval accuracy and faster resolution</span></li>
-          </ul>
+
+          <div class="hero-metrics">
+            <article class="metric-card">
+              <strong>3+</strong>
+              <span>years in analytics and enterprise AI delivery</span>
+            </article>
+            <article class="metric-card">
+              <strong>20%</strong>
+              <span>reduction in enterprise data search time</span>
+            </article>
+            <article class="metric-card">
+              <strong>25%</strong>
+              <span>improvement in retrieval accuracy and faster resolution</span>
+            </article>
+          </div>
         </div>
 
         <aside class="hero-panel" aria-label="Professional profile">
@@ -56,62 +79,64 @@
             <figcaption>
               <div>
                 <strong>Jayesh Kaushalya</strong>
-                <span>Decision Scientist</span>
+                <span>Decision Scientist at Mu Sigma</span>
               </div>
-              <span class="location-badge">Bengaluru, IN</span>
+              <span class="location-badge">Bengaluru</span>
             </figcaption>
           </figure>
 
-          <div class="profile-card">
-            <p class="card-label">Current Role</p>
-            <h2>Decision Scientist at Mu Sigma</h2>
-            <p>Supporting a Fortune 500 retail client with campaign analytics, customer intelligence, enterprise search, and agentic GenAI solutions.</p>
-          </div>
+          <div class="hero-panel-grid">
+            <article class="info-card spotlight-card">
+              <p class="card-label">Current Focus</p>
+              <h2>Enterprise AI systems that connect retrieval, reasoning, and business action.</h2>
+              <p>Building GenAI workflows for a Fortune 500 retail client across search, analytics, and decision support.</p>
+            </article>
 
-          <div class="profile-card compact">
-            <p class="card-label">Core Stack</p>
-            <div class="stack">
-              <span>Python</span>
-              <span>SQL</span>
-              <span>Azure</span>
-              <span>GenAI</span>
-              <span>LLM</span>
-              <span>RAG</span>
-            </div>
-          </div>
+            <article class="info-card">
+              <p class="card-label">Core Stack</p>
+              <div class="stack">
+                <span>Python</span>
+                <span>SQL</span>
+                <span>Azure</span>
+                <span>Neo4j</span>
+                <span>LLM</span>
+                <span>RAG</span>
+              </div>
+            </article>
 
-          <div class="profile-card compact">
-            <p class="card-label">Location</p>
-            <p>Bengaluru, Karnataka, India</p>
-            <p class="profile-meta">Open to enterprise AI, decision science, and GenAI product opportunities.</p>
+            <article class="info-card">
+              <p class="card-label">Base</p>
+              <p class="profile-meta">Bengaluru, Karnataka, India</p>
+              <p>Open to enterprise AI, decision science, and GenAI product opportunities.</p>
+            </article>
           </div>
         </aside>
       </section>
 
       <section class="signature-band">
-        <div class="band-item">
-          <p class="band-title">What He Builds</p>
-          <p>RAG pipelines, LLM-powered copilots, business-facing dashboards, and knowledge graph workflows.</p>
-        </div>
-        <div class="band-item">
-          <p class="band-title">Where He Adds Value</p>
-          <p>Retail analytics, campaign measurement, enterprise information access, and natural language decision support.</p>
-        </div>
-        <div class="band-item">
-          <p class="band-title">How He Works</p>
-          <p>Translate business use cases into practical AI systems with measurable operational impact.</p>
-        </div>
+        <article class="band-item">
+          <p class="band-title">What I Build</p>
+          <p>RAG pipelines, LLM copilots, enterprise dashboards, and knowledge graph workflows.</p>
+        </article>
+        <article class="band-item">
+          <p class="band-title">Where I Add Value</p>
+          <p>Retail analytics, enterprise search, decision support, and business-facing AI automation.</p>
+        </article>
+        <article class="band-item">
+          <p class="band-title">How I Work</p>
+          <p>Translate complex business use cases into practical AI systems with measurable operational impact.</p>
+        </article>
       </section>
 
       <section class="section-grid" id="projects">
         <div class="section-heading">
           <p class="eyebrow">Selected Work</p>
-          <h2>Selected solutions with measurable business impact.</h2>
-          <p class="section-copy">Recent work across enterprise AI assistants, retrieval systems, analytics, and business-facing GenAI experiences.</p>
+          <h2>High-value solutions shaped around measurable business outcomes.</h2>
+          <p class="section-copy">Recent work across enterprise AI assistants, retrieval systems, analytics, and GenAI experiences that improve speed, quality, and usability.</p>
         </div>
 
         <div class="card-grid">
-          <article class="feature-card">
+          <article class="feature-card feature-card-large">
             <div class="card-topline">
               <p class="card-tag">Case Study 01</p>
               <span class="impact-chip">Enterprise AI Assistant</span>
@@ -121,6 +146,7 @@
             <ul>
               <li>Integrated graph-based retrieval for richer contextual responses</li>
               <li>Enabled visual exploration and Cypher-powered enterprise insights</li>
+              <li>Improved the usability of fragmented internal knowledge</li>
             </ul>
           </article>
 
@@ -130,10 +156,10 @@
               <span class="impact-chip">Enterprise Search</span>
             </div>
             <h3>Natural language framework for business insight retrieval</h3>
-            <p>Implemented an LLM-driven framework that let users retrieve insights from enterprise data using natural language instead of manual exploration and fragmented query workflows.</p>
+            <p>Implemented an LLM-driven framework that let teams retrieve insights from enterprise data using natural language instead of manual query chains.</p>
             <ul>
               <li>Reduced enterprise data search time by 20%</li>
-              <li>Improved retrieval accuracy and query resolution time by 25%</li>
+              <li>Improved retrieval accuracy and resolution time by 25%</li>
             </ul>
           </article>
 
@@ -142,11 +168,11 @@
               <p class="card-tag">Case Study 03</p>
               <span class="impact-chip">Agentic GenAI</span>
             </div>
-            <h3>Intersect multi-agent analysis for 3D simulation datasets</h3>
-            <p>Designed and deployed the Intersect system to analyze, compare, and visualize 3D simulation CSV data through a multi-agent RAG architecture and natural language interaction.</p>
+            <h3>Intersect for 3D simulation dataset analysis</h3>
+            <p>Designed and deployed the Intersect system to analyze, compare, and visualize 3D simulation CSV data through a multi-agent RAG architecture.</p>
             <ul>
-              <li>Made complex simulations easier to inspect and compare</li>
-              <li>Supported both narrative reasoning and visual analysis workflows</li>
+              <li>Made technical data easier to inspect and compare</li>
+              <li>Supported narrative reasoning and visual analysis workflows</li>
             </ul>
           </article>
         </div>
@@ -155,26 +181,30 @@
       <section class="split-section" id="experience">
         <div class="section-heading">
           <p class="eyebrow">Professional Experience</p>
-          <h2>Experience translating complex data into confident action.</h2>
+          <h2>Experience turning complex data, search, and AI workflows into confident action.</h2>
         </div>
 
         <div class="timeline">
           <article class="timeline-item">
-            <div>
+            <div class="timeline-meta">
               <p class="time">Current Role</p>
               <h3>Decision Scientist</h3>
               <p class="place">Mu Sigma | Bengaluru</p>
             </div>
-            <p>Leading work across retail analytics and enterprise GenAI for a Fortune 500 client, spanning customer engagement, intelligent search, dashboarding, and business-facing AI workflows.</p>
+            <div class="timeline-body">
+              <p>Leading work across retail analytics and enterprise GenAI for a Fortune 500 client, spanning customer engagement, intelligent search, dashboarding, and business-facing AI workflows.</p>
+            </div>
           </article>
 
           <article class="timeline-item">
-            <div>
+            <div class="timeline-meta">
               <p class="time">Customer and Campaign Analytics</p>
               <h3>RFM-based onboarding and loyalty monitoring</h3>
               <p class="place">Mu Sigma</p>
             </div>
-            <p>Built a dashboard to monitor customer onboarding and categorize users with RFM analysis, helping stakeholders improve retention, loyalty, and real-time engagement visibility.</p>
+            <div class="timeline-body">
+              <p>Built a dashboard to monitor customer onboarding and categorize users with RFM analysis, helping stakeholders improve retention, loyalty, and real-time engagement visibility.</p>
+            </div>
           </article>
         </div>
       </section>
