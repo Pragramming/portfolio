@@ -3,9 +3,43 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactForm = document.getElementById("contactForm");
   const formStatus = document.getElementById("formStatus");
   const currentYear = document.getElementById("currentYear");
+  const themeToggle = document.getElementById("themeToggle");
+  const themeToggleLabel = themeToggle?.querySelector(".theme-toggle-label");
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const storedTheme = localStorage.getItem("portfolio-theme");
+  const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  const applyTheme = (theme) => {
+    const resolvedTheme = theme === "dark" ? "dark" : "light";
+    document.body.setAttribute("data-theme", resolvedTheme);
+    localStorage.setItem("portfolio-theme", resolvedTheme);
+
+    if (themeToggle) {
+      const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+      themeToggle.setAttribute("aria-pressed", String(resolvedTheme === "dark"));
+      themeToggle.setAttribute("aria-label", `Switch to ${nextTheme} theme`);
+    }
+
+    if (themeToggleLabel) {
+      themeToggleLabel.textContent = resolvedTheme === "dark" ? "Light" : "Dark";
+    }
+
+    if (themeMeta) {
+      themeMeta.setAttribute("content", resolvedTheme === "dark" ? "#08101d" : "#07111f");
+    }
+  };
+
+  applyTheme(storedTheme || (preferredDark ? "dark" : "light"));
 
   if (currentYear) {
     currentYear.textContent = new Date().getFullYear();
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const currentTheme = document.body.getAttribute("data-theme") === "dark" ? "dark" : "light";
+      applyTheme(currentTheme === "dark" ? "light" : "dark");
+    });
   }
 
   sectionLinks.forEach((link) => {
