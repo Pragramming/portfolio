@@ -876,9 +876,17 @@ body[data-theme="dark"] .contact-form select option {
     align-items: flex-start;
   }
 
+  .contact-panel {
+    align-items: stretch;
+  }
+
   .timeline-item,
   .contact-form {
     grid-template-columns: 1fr;
+  }
+
+  .contact-form {
+    width: 100%;
   }
 }
 
@@ -981,6 +989,13 @@ body[data-theme="dark"] .contact-form select option {
     width: 100%;
   }
 
+  .contact-form label,
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    width: 100%;
+  }
+
   .metric-card {
     min-width: 100%;
   }
@@ -1016,6 +1031,13 @@ body[data-theme="dark"] .contact-form select option {
 
   .main-nav a {
     font-size: 0.82rem;
+  }
+
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    padding: 15px 16px;
+    border-radius: 18px;
   }
 }
 
