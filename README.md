@@ -9,7 +9,7 @@ uses a small Flask API and a local SQLite database.
 2. From the project root, install dependencies with `python -m pip install -r requirements.txt`.
 3. Optionally set `LEARNING_WORKBOOK` to the full path of
    `AI_ML_DataScience_FDE_GenAI_32_Week_Interview_Plan.xlsx`. If omitted, the
-   app looks in your Downloads folder and imports the workbook on first startup.
+   app imports the bundled workbook in `portfolio/data/` on first startup.
 4. Start the app with `python portfolio/server.py`.
 5. Open `http://127.0.0.1:5000/` for the portfolio or
    `http://127.0.0.1:5000/learn` for the private Learning Studio.
@@ -46,3 +46,23 @@ re-import it explicitly, set `LEARNING_WORKBOOK` and run:
 
 Re-importing updates the shared curriculum, but does not overwrite personal
 progress, notes, quizzes, interview attempts, project progress, or applications.
+
+## Deploy to Render
+
+The repository includes `render.yaml` for a Render **Web Service**. In Render,
+create a new Blueprint from this repository and set `LEARNING_LOGIN_PASSWORD`
+to a strong private value before the first deployment. The Blueprint uses
+Gunicorn, binds to Render's `PORT`, exposes `/healthz` as its health check, and
+mounts a persistent disk at `/var/data` for SQLite data. The workbook is bundled
+with the app and imports on startup.
+
+Do not deploy as a Render Static Site: the Learning Studio requires its Flask
+backend. A persistent disk requires a paid Render instance. Without it, local
+SQLite data can be lost when Render restarts or redeploys. Set the Render
+environment variables `LEARNING_SECRET_KEY` (a long random secret),
+`LEARNING_LOGIN_PASSWORD` (not `jayesh`), and `LEARNING_DB_PATH` to
+`/var/data/learning.sqlite3`. Set `LEARNING_COOKIE_SECURE` to `1` for HTTPS.
+
+To keep an existing Render portfolio URL, deploy this Web Service and then
+attach the domain to it; the current static-site service itself cannot run the
+Flask application.

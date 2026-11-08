@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent
 INSTANCE_DIR = ROOT / "instance"
 DB_PATH = Path(os.environ.get("LEARNING_DB_PATH", INSTANCE_DIR / "learning.sqlite3"))
 WORKBOOK_NAME = "AI_ML_DataScience_FDE_GenAI_32_Week_Interview_Plan.xlsx"
-DEFAULT_WORKBOOK = Path.home() / "Downloads" / WORKBOOK_NAME
+DEFAULT_WORKBOOK = ROOT / "data" / WORKBOOK_NAME
 
 app = Flask(__name__, static_folder=None)
 secret_key = os.environ.get("LEARNING_SECRET_KEY")
@@ -499,6 +499,20 @@ def csrf_token():
         session["csrf_token"] = secrets.token_urlsafe(32)
         session.permanent = True
     return jsonify(csrf_token=session["csrf_token"])
+
+
+@app.get("/healthz")
+def health_check():
+    try:
+        db = get_db()
+        db.execute("SELECT 1").fetchone()
+        imported = db.execute("SELECT COUNT(*) FROM curriculum_weeks").fetchone()[0] == 32
+    except sqlite3.Error:
+        app.logger.exception("Health check could not access the database.")
+        return jsonify(status="unhealthy"), 503
+    if not imported:
+        return jsonify(status="unhealthy", reason="curriculum_not_imported"), 503
+    return jsonify(status="ok")
 
 
 @app.get("/api/auth/me")
@@ -1219,7 +1233,7 @@ initialize_database()
 
 if __name__ == "__main__":
     app.run(
-        host=os.environ.get("LEARNING_HOST", "127.0.0.1"),
-        port=int(os.environ.get("LEARNING_PORT", "5000")),
+        host=os.environ.get("LEARNING_HOST", "0.0.0.0"),
+        port=int(os.environ.get("PORT", os.environ.get("LEARNING_PORT", "5000"))),
         debug=False,
     )
