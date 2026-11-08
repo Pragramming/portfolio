@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f5efe9" />
+  <title>Learning Studio | Jayesh Kaushalya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/learning.css">
+</head>
+<body>
+  <div id="authView" class="auth-shell" hidden>
+    <a class="brand" href="/" aria-label="Return to portfolio">
+      <span class="brand-mark">JK</span><span>Learning Studio</span>
+    </a>
+    <section class="auth-card">
+      <p class="eyebrow">YOUR PRIVATE LEARNING SPACE</p>
+      <h1 id="authHeading">Welcome back.</h1>
+      <p id="authIntro" class="muted">Sign in to continue your preparation plan.</p>
+      <form id="authForm" class="form-stack">
+        <label>Login ID<input id="authLoginId" type="text" autocomplete="username" value="jayesh" readonly></label>
+        <label>Password<input id="authPassword" type="password" autocomplete="current-password" required maxlength="1024"></label>
+        <button id="authSubmit" class="button button-dark" type="submit">Sign in</button>
+        <p id="authError" class="notice error" role="alert" hidden></p>
+      </form>
+      <p class="muted small">Single private account · Registration is disabled.</p>
+      <a class="text-link" href="/">← Back to portfolio</a>
+    </section>
+  </div>
+
+  <div id="appView" class="app-shell" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Portfolio home">
+        <span class="brand-mark">JK</span><span>Learning Studio</span>
+      </a>
+      <p class="sidebar-label">YOUR PLAN</p>
+      <nav id="mainNav" class="side-nav" aria-label="Learning navigation">
+        <button data-view="dashboard" class="active"><span>◷</span> Overview</button>
+        <button data-view="lessons"><span>▤</span> Curriculum & notes</button>
+        <button data-view="interviews"><span>⌘</span> Interview practice</button>
+        <button data-view="projects"><span>◈</span> Portfolio projects</button>
+        <button data-view="jobs"><span>↗</span> Job applications</button>
+        <button data-view="tutor"><span>✳</span> AI tutor</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <p id="signedInId" class="small muted"></p>
+        <button id="logoutButton" class="text-button">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <a class="back-link" href="/">← Public portfolio</a>
+          <p id="headerDate" class="eyebrow"></p>
+        </div>
+        <span class="private-badge"><span></span> Private workspace</span>
+      </header>
+      <div id="appNotice" class="notice" role="status" hidden></div>
+
+      <section id="view-dashboard" class="view-panel"></section>
+      <section id="view-lessons" class="view-panel" hidden></section>
+      <section id="view-interviews" class="view-panel" hidden></section>
+      <section id="view-projects" class="view-panel" hidden></section>
+      <section id="view-jobs" class="view-panel" hidden></section>
+      <section id="view-tutor" class="view-panel" hidden></section>
+    </main>
+  </div>
+  <script src="/learning.js"></script>
+</body>
+</html>
