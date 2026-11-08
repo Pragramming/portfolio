@@ -47,22 +47,36 @@ re-import it explicitly, set `LEARNING_WORKBOOK` and run:
 Re-importing updates the shared curriculum, but does not overwrite personal
 progress, notes, quizzes, interview attempts, project progress, or applications.
 
-## Deploy to Render
+## Free Render deployment
 
-The repository includes `render.yaml` for a Render **Web Service**. In Render,
-create a new Blueprint from this repository and set `LEARNING_LOGIN_PASSWORD`
-to a strong private value before the first deployment. The Blueprint uses
-Gunicorn, binds to Render's `PORT`, exposes `/healthz` as its health check, and
-mounts a persistent disk at `/var/data` for SQLite data. The workbook is bundled
-with the app and imports on startup.
+The repository includes `render.yaml` for a free Render **Web Service**. The
+app supports both local SQLite and PostgreSQL; set `DATABASE_URL` to use an
+external PostgreSQL database. This lets the free Render web service sleep
+without losing notes and progress to its ephemeral filesystem.
 
-Do not deploy as a Render Static Site: the Learning Studio requires its Flask
-backend. A persistent disk requires a paid Render instance. Without it, local
-SQLite data can be lost when Render restarts or redeploys. Set the Render
-environment variables `LEARNING_SECRET_KEY` (a long random secret),
-`LEARNING_LOGIN_PASSWORD` (not `jayesh`), and `LEARNING_DB_PATH` to
-`/var/data/learning.sqlite3`. Set `LEARNING_COOKIE_SECURE` to `1` for HTTPS.
+1. Create a free PostgreSQL project with a provider such as
+   [Neon](https://neon.tech/pricing). Copy its PostgreSQL connection string.
+2. In Render, create a Blueprint from this repository and deploy the
+   `jayesh-learning-studio` free Web Service.
+3. In the Render service's environment settings, add `DATABASE_URL` and paste
+   the connection string. Set `LEARNING_LOGIN_PASSWORD` to a strong private
+   password; do not use `jayesh` for a public service. Render generates
+   `LEARNING_SECRET_KEY`, and `LEARNING_COOKIE_SECURE` is enabled in the
+   Blueprint.
+4. Wait for `/healthz` to report healthy, then open
+   `https://jayesh-learning-studio.onrender.com/learn`.
 
-To keep an existing Render portfolio URL, deploy this Web Service and then
-attach the domain to it; the current static-site service itself cannot run the
-Flask application.
+The bundled workbook imports into PostgreSQL the first time the app starts. The
+current portfolio Static Site cannot run Flask, so the new Web Service has its
+own `onrender.com` address. The portfolio navigation links to the new
+`jayesh-learning-studio` service; redeploy the Static Site after committing the
+updated `index.html`. If Render assigns a different service hostname, update
+that link to the hostname shown in the Render dashboard.
+
+The Render free web service spins down after inactivity, so its first request
+after a pause can take about a minute. It has no persistent local disk; do not
+use SQLite there. Neon Free also has usage and storage limits, and its compute
+can pause when idle. Review both providers' current free-tier limits and export
+backups regularly. Render's free Postgres expires after 30 days, so it is not
+the long-term free database choice here. AI tutor usage is separate and may
+cost money if you configure a paid AI provider; it stays disabled by default.

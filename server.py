@@ -12,6 +12,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from flask import Flask, g, jsonify, request, send_from_directory, session
+import psycopg
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -204,11 +205,57 @@ CREATE INDEX IF NOT EXISTS idx_jobs_user ON job_applications(user_id, updated_at
 
 
 def connect_db():
+    database_url = os.environ.get("DATABASE_URL")
+    if database_url:
+        return PostgresConnection(
+            psycopg.connect(database_url, row_factory=hybrid_row, connect_timeout=10)
+        )
+    if os.environ.get("LEARNING_REQUIRE_POSTGRES") == "1":
+        raise RuntimeError("DATABASE_URL must be configured for this deployment.")
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(DB_PATH, timeout=15)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
+
+
+class HybridRow(dict):
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return tuple(self.values())[key]
+        return super().__getitem__(key)
+
+
+def hybrid_row(cursor):
+    names = [column.name for column in cursor.description]
+    return lambda values: HybridRow(zip(names, values))
+
+
+class PostgresConnection:
+    is_postgres = True
+
+    def __init__(self, connection):
+        self.connection = connection
+
+    def execute(self, query, parameters=()):
+        return self.connection.execute(query.replace("?", "%s"), parameters)
+
+    def commit(self):
+        self.connection.commit()
+
+    def rollback(self):
+        self.connection.rollback()
+
+    def close(self):
+        self.connection.close()
+
+
+def postgres_schema_statements():
+    postgres_schema = SCHEMA.replace("PRAGMA foreign_keys = ON;", "")
+    postgres_schema = postgres_schema.replace(
+        "INTEGER PRIMARY KEY AUTOINCREMENT", "BIGSERIAL PRIMARY KEY"
+    )
+    return [statement.strip() for statement in postgres_schema.split(";") if statement.strip()]
 
 
 def get_db():
@@ -316,9 +363,11 @@ def import_workbook(path):
             if not plan_date:
                 continue
             db.execute(
-                """INSERT OR REPLACE INTO study_plan
+                """INSERT INTO study_plan
                 (plan_date,day_name,week_no,focus,planned_hours,suggested_session)
-                VALUES (?,?,?,?,?,?)""",
+                VALUES (?,?,?,?,?,?) ON CONFLICT(plan_date) DO UPDATE SET
+                day_name=excluded.day_name,week_no=excluded.week_no,focus=excluded.focus,
+                planned_hours=excluded.planned_hours,suggested_session=excluded.suggested_session""",
                 (
                     plan_date, cell_text(item["Day"]), int(item["Week"]),
                     cell_text(item["Week's focus"]), cell_number(item["Planned hours"]),
@@ -385,7 +434,11 @@ def import_workbook(path):
 def initialize_database():
     db = connect_db()
     try:
-        db.executescript(SCHEMA)
+        if getattr(db, "is_postgres", False):
+            for statement in postgres_schema_statements():
+                db.execute(statement)
+        else:
+            db.executescript(SCHEMA)
         db.commit()
         count = db.execute("SELECT COUNT(*) FROM curriculum_weeks").fetchone()[0]
     finally:
@@ -402,7 +455,11 @@ def initialize_login_account():
         raise RuntimeError("LEARNING_LOGIN_PASSWORD must contain between 1 and 1,024 characters.")
     db = connect_db()
     try:
-        db.execute("BEGIN IMMEDIATE")
+        if getattr(db, "is_postgres", False):
+            db.execute("BEGIN")
+            db.execute("SELECT pg_advisory_xact_lock(7162052026)")
+        else:
+            db.execute("BEGIN IMMEDIATE")
         users = db.execute("SELECT id,email,password_hash FROM users ORDER BY id").fetchall()
         if len(users) > 1:
             raise RuntimeError(
@@ -507,7 +564,7 @@ def health_check():
         db = get_db()
         db.execute("SELECT 1").fetchone()
         imported = db.execute("SELECT COUNT(*) FROM curriculum_weeks").fetchone()[0] == 32
-    except sqlite3.Error:
+    except (sqlite3.Error, psycopg.Error):
         app.logger.exception("Health check could not access the database.")
         return jsonify(status="unhealthy"), 503
     if not imported:
@@ -785,11 +842,12 @@ def create_note():
         return jsonify(error="Topic not found."), 404
     now = datetime.now(timezone.utc).isoformat()
     cursor = db.execute(
-        "INSERT INTO lesson_notes (user_id,topic_id,title,content,created_at,updated_at) VALUES (?,?,?,?,?,?)",
+        "INSERT INTO lesson_notes (user_id,topic_id,title,content,created_at,updated_at) VALUES (?,?,?,?,?,?) RETURNING id",
         (session["user_id"], topic_id, title, content, now, now),
     )
+    note_id = cursor.fetchone()["id"]
     db.commit()
-    return jsonify(id=cursor.lastrowid), 201
+    return jsonify(id=note_id), 201
 
 
 @app.put("/api/notes/<int:note_id>")
@@ -944,14 +1002,15 @@ def save_quiz():
         return jsonify(error="Quiz notes must be 4,000 characters or fewer."), 400
     cursor = get_db().execute(
         """INSERT INTO quiz_attempts (user_id,category,score,total,weak_topics,notes,taken_at)
-        VALUES (?,?,?,?,?,?,?)""",
+        VALUES (?,?,?,?,?,?,?) RETURNING id""",
         (
             session["user_id"], category, score, total, json.dumps(weak_topics), notes,
             datetime.now(timezone.utc).isoformat(),
         ),
     )
+    attempt_id = cursor.fetchone()["id"]
     get_db().commit()
-    return jsonify(id=cursor.lastrowid), 201
+    return jsonify(id=attempt_id), 201
 
 
 @app.get("/api/projects")
@@ -1059,11 +1118,12 @@ def create_job():
     fields = ",".join(JOB_FIELDS)
     marks = ",".join("?" for _ in JOB_FIELDS)
     cursor = get_db().execute(
-        f"INSERT INTO job_applications (user_id,{fields},created_at,updated_at) VALUES (?,{marks},?,?)",
+        f"INSERT INTO job_applications (user_id,{fields},created_at,updated_at) VALUES (?,{marks},?,?) RETURNING id",
         (session["user_id"], *[values[field] for field in JOB_FIELDS], now, now),
     )
+    job_id = cursor.fetchone()["id"]
     get_db().commit()
-    return jsonify(id=cursor.lastrowid), 201
+    return jsonify(id=job_id), 201
 
 
 @app.put("/api/jobs/<int:job_id>")
