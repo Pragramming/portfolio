@@ -12,7 +12,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from flask import Flask, g, jsonify, request, send_from_directory, session
-import psycopg
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -205,57 +204,11 @@ CREATE INDEX IF NOT EXISTS idx_jobs_user ON job_applications(user_id, updated_at
 
 
 def connect_db():
-    database_url = os.environ.get("DATABASE_URL")
-    if database_url:
-        return PostgresConnection(
-            psycopg.connect(database_url, row_factory=hybrid_row, connect_timeout=10)
-        )
-    if os.environ.get("LEARNING_REQUIRE_POSTGRES") == "1":
-        raise RuntimeError("DATABASE_URL must be configured for this deployment.")
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(DB_PATH, timeout=15)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
-
-
-class HybridRow(dict):
-    def __getitem__(self, key):
-        if isinstance(key, int):
-            return tuple(self.values())[key]
-        return super().__getitem__(key)
-
-
-def hybrid_row(cursor):
-    names = [column.name for column in cursor.description]
-    return lambda values: HybridRow(zip(names, values))
-
-
-class PostgresConnection:
-    is_postgres = True
-
-    def __init__(self, connection):
-        self.connection = connection
-
-    def execute(self, query, parameters=()):
-        return self.connection.execute(query.replace("?", "%s"), parameters)
-
-    def commit(self):
-        self.connection.commit()
-
-    def rollback(self):
-        self.connection.rollback()
-
-    def close(self):
-        self.connection.close()
-
-
-def postgres_schema_statements():
-    postgres_schema = SCHEMA.replace("PRAGMA foreign_keys = ON;", "")
-    postgres_schema = postgres_schema.replace(
-        "INTEGER PRIMARY KEY AUTOINCREMENT", "BIGSERIAL PRIMARY KEY"
-    )
-    return [statement.strip() for statement in postgres_schema.split(";") if statement.strip()]
 
 
 def get_db():
@@ -434,11 +387,7 @@ def import_workbook(path):
 def initialize_database():
     db = connect_db()
     try:
-        if getattr(db, "is_postgres", False):
-            for statement in postgres_schema_statements():
-                db.execute(statement)
-        else:
-            db.executescript(SCHEMA)
+        db.executescript(SCHEMA)
         db.commit()
         count = db.execute("SELECT COUNT(*) FROM curriculum_weeks").fetchone()[0]
     finally:
@@ -455,11 +404,7 @@ def initialize_login_account():
         raise RuntimeError("LEARNING_LOGIN_PASSWORD must contain between 1 and 1,024 characters.")
     db = connect_db()
     try:
-        if getattr(db, "is_postgres", False):
-            db.execute("BEGIN")
-            db.execute("SELECT pg_advisory_xact_lock(7162052026)")
-        else:
-            db.execute("BEGIN IMMEDIATE")
+        db.execute("BEGIN IMMEDIATE")
         users = db.execute("SELECT id,email,password_hash FROM users ORDER BY id").fetchall()
         if len(users) > 1:
             raise RuntimeError(
@@ -564,7 +509,7 @@ def health_check():
         db = get_db()
         db.execute("SELECT 1").fetchone()
         imported = db.execute("SELECT COUNT(*) FROM curriculum_weeks").fetchone()[0] == 32
-    except (sqlite3.Error, psycopg.Error):
+    except sqlite3.Error:
         app.logger.exception("Health check could not access the database.")
         return jsonify(status="unhealthy"), 503
     if not imported:
